@@ -33,12 +33,12 @@ namespace WebAPI
                 options.Audience = Configuration["Azure:Audience"];
             });
 
-            //To manage scopes
+            //Manage scopes
             services.AddAuthorization(options =>
             {
-                options.DefaultPolicy = new AuthorizationPolicyBuilder()
-                                            .RequireAuthenticatedUser()
-                                            .Build();
+                //options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                //                            .RequireAuthenticatedUser()
+                //                            .Build();
                 options.AddPolicy("weather.read", policy => policy.Requirements.Add(new ScopeRequirement("weather.read", Configuration["Azure:Authority"])));
             });
 
