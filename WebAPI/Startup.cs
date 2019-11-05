@@ -22,6 +22,8 @@ namespace WebAPI
         {
             services.AddControllers();
 
+
+            //1. Add autentication
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -33,13 +35,11 @@ namespace WebAPI
                 options.Audience = Configuration["Azure:Audience"];
             });
 
-            //Manage scopes
+            //2. Manage scopes
             services.AddAuthorization(options =>
-            {
-                //options.DefaultPolicy = new AuthorizationPolicyBuilder()
-                //                            .RequireAuthenticatedUser()
-                //                            .Build();
+            {              
                 options.AddPolicy("weather.read", policy => policy.Requirements.Add(new ScopeRequirement("weather.read", Configuration["Azure:Authority"])));
+                options.AddPolicy("weather.write", policy => policy.Requirements.Add(new ScopeRequirement("weather.write", Configuration["Azure:Authority"])));
             });
 
             services.AddSingleton<IAuthorizationHandler, ScopeHandler>();
@@ -56,7 +56,7 @@ namespace WebAPI
 
             app.UseRouting();
 
-            //UseAuthentication before UseAuthorization
+            //3. UseAuthentication before UseAuthorization
             app.UseAuthentication();
 
             app.UseAuthorization();
